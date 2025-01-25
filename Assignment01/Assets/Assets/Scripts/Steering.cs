@@ -5,19 +5,47 @@ public class Steering : MonoBehaviour
 {
     //all references will be made in the gamemanager to both connect the seeker and target together and call the below fucntions when needed
 
-    public static Vector3 SeekBehaviour(Vector2 seeker, Vector2 target, float moveSpeed)
+    public static Vector3 SeekBehaviour(Vector3 seeker, Vector3 target, ref Vector3 currentVelocity, float moveSpeed, float acceleration)
     {
-        Vector2 desiredVelocity = target - seeker;
+        Vector3 desiredVelocity = target - seeker;
         float distance = desiredVelocity.magnitude;
         desiredVelocity = desiredVelocity.normalized * moveSpeed;
-        Vector2 steering = desiredVelocity - seeker;
+        Vector3 steering = desiredVelocity - currentVelocity;
+
+        steering = Vector2.ClampMagnitude(steering, acceleration);
+        currentVelocity += steering * Time.deltaTime;
+        currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed);
+        seeker += currentVelocity * Time.deltaTime;
+        
         return steering;
     }
+    public static void RotateTowardsMovePath(Transform seeker, Vector3 velocity, float turnSpeed)
+    {
+        if(velocity.magnitude > 0.01f)
+        {
+            float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+            //we only need rotation on the z axis because it is 2D so this line is unneccesary
+            //Quaternion targetRotation = Quaternion.LookRotation(velocity);
 
-    //public static Vector3 FleeBehaviour(Vector2 seeker, Vector2 target)
-    //{
-    //    return Vector3.zero;
-    //}
+            Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
+            seeker.rotation = Quaternion.RotateTowards(seeker.rotation, targetRotation, turnSpeed * Time.deltaTime);
+        }
+    }
+
+    public static Vector3 FleeBehaviour(Vector3 seeker, Vector3 target, ref Vector3 currentVelocity, float moveSpeed, float acceleration)
+    {
+        Vector3 desiredVelocity = target - seeker;
+        float distance = desiredVelocity.magnitude;
+        desiredVelocity = desiredVelocity.normalized * moveSpeed;
+        Vector3 steering = currentVelocity - desiredVelocity;
+
+        steering = Vector2.ClampMagnitude(steering, acceleration);
+        currentVelocity += steering * Time.deltaTime;
+        currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed);
+        seeker += currentVelocity * Time.deltaTime;
+
+        return steering;
+    }
 
     //public static Vector3 ArriveBehaviour()
     //{
