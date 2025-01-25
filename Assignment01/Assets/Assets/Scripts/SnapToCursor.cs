@@ -11,7 +11,7 @@ public class SnapToCursor : MonoBehaviour
     {
         Vector2 mouse = Input.mousePosition;
         mouse = Camera.main.ScreenToWorldPoint(mouse);
-        Debug.Log(mouse);
+        //Debug.Log(mouse);
 
         transform.position = mouse;
     }
