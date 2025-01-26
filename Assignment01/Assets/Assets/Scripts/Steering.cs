@@ -46,12 +46,28 @@ public class Steering : MonoBehaviour
 
         return steering;
     }
+    public static Vector3 ArriveBehaviour(Vector3 seeker, Vector3 target, ref Vector3 currentVelocity, float moveSpeed, float acceleration, float slowDistance)
+    {
+        Vector3 desiredVelocity = target - seeker;
+        float distance = desiredVelocity.magnitude;
 
-    //public static Vector3 ArriveBehaviour()
-    //{
-    //    return Vector3.zero;
-    //}
+        if (distance < slowDistance)
+        {
+            desiredVelocity = desiredVelocity.normalized * moveSpeed * (distance / slowDistance);
+        }
+        else
+        {
+            desiredVelocity = desiredVelocity.normalized * moveSpeed;
+        }
+        Vector3 steering = desiredVelocity - currentVelocity;
 
+        steering = Vector2.ClampMagnitude(steering, acceleration);
+        currentVelocity += steering * Time.deltaTime;
+        currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed);
+        seeker += currentVelocity * Time.deltaTime;
+
+        return steering;
+    }
     //public static Vector3 AvoidBehaviour()
     //{
     //    return Vector3.zero;
