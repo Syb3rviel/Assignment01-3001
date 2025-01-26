@@ -5,10 +5,10 @@ public class GameManager : MonoBehaviour
     public GameObject target;
     public GameObject seeker;
     public GameObject obstacle;
-    float maxSpeed = 10.0f;
-    float turnSpeed = 200f;
+    float maxSpeed = 5.0f;
+    float turnSpeed = 150f;
     float maxAcceleration = 5.0f;
-    float slowingDistance = 2.5f;
+    float slowingDistance = 3f;
     float obstacleRadius = 2.4f;
     //float fleeStrength = 5f;
 
@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
         Vector3 steer = Steering.AvoidBehaviour(seeker.transform.position, target.transform.position, obstacle.transform.position, ref currentVelocity, maxSpeed,
             maxAcceleration, obstacleRadius, slowingDistance);
         seeker.transform.position += currentVelocity * Time.deltaTime;
-        Debug.Log(currentVelocity);
+        //Debug.Log(currentVelocity);
         Steering.RotateTowardsMovePath(seeker.transform, steer, turnSpeed);
     }
 }

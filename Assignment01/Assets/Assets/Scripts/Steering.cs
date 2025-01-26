@@ -76,6 +76,7 @@ public class Steering : MonoBehaviour
         float distanceToObstacle = Vector3.Distance(seeker, obstacle);
         float slowDownDistance = Mathf.Clamp01(distanceToObstacle / slowDown);
 
+
         if (distanceToObstacle < obstacleRadius)
         {
             //Debug.Log("Avoiding obstacle...");
@@ -83,16 +84,12 @@ public class Steering : MonoBehaviour
             // Flee force to move away from the obstacle
             Vector3 fleeForce = directionFromObstacle * moveSpeed;
 
-            // Tangential force to move around the obstacle
+            // Tangential force to move around the obstacle -- otherwise it just sits there in one spot forever jittering
             Vector3 tangentialForce = Vector3.Cross(directionFromObstacle, Vector3.forward).normalized * moveSpeed * 0.2f;
 
-            // Combine flee and tangential forces
             Vector3 avoidanceForce = fleeForce + tangentialForce;
-
-            // Steering logic
             Vector3 steering = avoidanceForce - currentVelocity;
 
-            // Clamp the steering force and apply it to velocity
             steering = Vector3.ClampMagnitude(steering, acceleration);
             currentVelocity += steering * Time.deltaTime;
             currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed).normalized;
@@ -104,6 +101,12 @@ public class Steering : MonoBehaviour
         {
             Vector3 desiredVelocity = target - seeker;
             float distance = desiredVelocity.magnitude;
+            if(distance <= 0.70f)
+            {
+                //we want it to stop --- 1.58 is how wide one whole sprite is
+                currentVelocity = Vector3.zero;
+                return currentVelocity;
+            }
 
             if (distance < slowDown)
             {
@@ -122,26 +125,5 @@ public class Steering : MonoBehaviour
 
             return steering;
         }
-
-        //return Vector3.zero;
-
-
-        //Debug.Log("we are fleeing");
-
-        //Vector3 desiredVelocity = obstacle - seeker;
-        //float distance = desiredVelocity.magnitude;
-        //desiredVelocity = desiredVelocity.normalized * moveSpeed;
-
-        ////stands for tangential force so that seeker actually goes around teh target instead of jittering in spot forever
-        //Vector3 tanForce = Vector3.Cross(directionFromObstacle, Vector3.up).normalized * moveSpeed * 0.5f;
-        //Vector3 combinedForce = desiredVelocity + tanForce;
-
-        //Vector3 steering = currentVelocity - combinedForce;
-
-        //steering = Vector2.ClampMagnitude(steering, acceleration);
-        //currentVelocity += steering * Time.deltaTime;
-        //currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed);
-        //seeker += currentVelocity * Time.deltaTime;
-        //return steering;
     }
 }
