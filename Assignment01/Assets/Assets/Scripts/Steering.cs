@@ -68,8 +68,26 @@ public class Steering : MonoBehaviour
 
         return steering;
     }
-    //public static Vector3 AvoidBehaviour()
-    //{
-    //    return Vector3.zero;
-    //}
+    public static Vector3 AvoidBehaviour(Vector3 seeker, Vector3 obstacle, ref Vector3 currentVelocity, float moveSpeed, float acceleration, float avoidDistance)
+    {
+        Vector3 desiredVelocity = obstacle - seeker;
+        float distance = desiredVelocity.magnitude;
+        if (distance > avoidDistance)
+        {
+            desiredVelocity = desiredVelocity.normalized * moveSpeed * (avoidDistance / distance);
+        }
+        else
+        {
+            desiredVelocity = desiredVelocity.normalized * moveSpeed;
+        }
+
+        Vector3 steering = currentVelocity - desiredVelocity;
+
+        steering = Vector2.ClampMagnitude(steering, acceleration);
+        currentVelocity += steering * Time.deltaTime;
+        currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed);
+        seeker += currentVelocity * Time.deltaTime;
+
+        return steering;
+    }
 }
