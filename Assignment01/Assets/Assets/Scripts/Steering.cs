@@ -68,26 +68,18 @@ public class Steering : MonoBehaviour
 
         return steering;
     }
-    public static Vector3 AvoidBehaviour(Vector3 seeker, Vector3 obstacle, ref Vector3 currentVelocity, float moveSpeed, float acceleration, float avoidDistance)
+    public static Vector3 AvoidBehaviour(Vector3 seeker, Vector3 obstacle, Vector3 target, float avoidDistance, float fleeStrength, float distanceToObstacle, float moveSpeed)
     {
-        Vector3 desiredVelocity = obstacle - seeker;
-        float distance = desiredVelocity.magnitude;
-        if (distance > avoidDistance)
-        {
-            desiredVelocity = desiredVelocity.normalized * moveSpeed * (avoidDistance / distance);
-        }
-        else
-        {
-            desiredVelocity = desiredVelocity.normalized * moveSpeed;
-        }
+        Vector3 directionToTarget = (target - seeker).normalized;
+        Vector3 directionFromObstacle = (seeker - obstacle).normalized;
 
-        Vector3 steering = currentVelocity - desiredVelocity;
+        //float distanceToObstacle = Vector3.Distance(seeker, obstacle);
 
-        steering = Vector2.ClampMagnitude(steering, acceleration);
-        currentVelocity += steering * Time.deltaTime;
-        currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed);
-        seeker += currentVelocity * Time.deltaTime;
+            float fleeWeight = 1 - (distanceToObstacle / avoidDistance); //closer means fleeing will overpower
+            Vector3 fleeForce = directionFromObstacle * (fleeStrength * fleeWeight);
 
-        return steering;
+            Vector3 combinedForce = (fleeForce + directionToTarget).normalized * moveSpeed;
+            return combinedForce;
+
     }
 }
