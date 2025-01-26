@@ -8,32 +8,21 @@ public class GameManager : MonoBehaviour
     float maxSpeed = 10.0f;
     float turnSpeed = 200f;
     float maxAcceleration = 5.0f;
-    float slowingDistance = 2.0f;
-    float obstacleRadius = 3.0f;
-    float fleeStrength = 5f;
+    float slowingDistance = 2.5f;
+    float obstacleRadius = 2.4f;
+    //float fleeStrength = 5f;
 
     private Vector3 currentVelocity = Vector3.zero;
     void Update()
     {
-        float distanceToObstacle = Vector3.Distance(seeker.transform.position, obstacle.transform.position);
+        //when we try to do avoid we end up in a cycle where we just jitter on the spot because we are calling flee and arrive over and over again
+        //aka - we are not going around the radius but instead just going back and forth
 
-        if (distanceToObstacle < obstacleRadius)
-        {
 
-            Vector3 steer = Steering.AvoidBehaviour(seeker.transform.position, obstacle.transform.position, target.transform.position, 
-                obstacleRadius, fleeStrength, distanceToObstacle, maxSpeed);
-            seeker.transform.position += steer * Time.deltaTime;
-            Steering.RotateTowardsMovePath(seeker.transform, steer, turnSpeed);
-            Debug.Log("we are fleeing");
-        }
-        else
-        {
-            //we call arrive
-            Vector3 steer = Steering.ArriveBehaviour(seeker.transform.position, target.transform.position, ref currentVelocity, maxSpeed, maxAcceleration, slowingDistance);
-            seeker.transform.position += steer * Time.deltaTime;
-            //Steering.RotateTowardsMovePath(seeker.transform, steer, turnSpeed);
-            Debug.Log("We are seeking");
-        }
-
+        Vector3 steer = Steering.AvoidBehaviour(seeker.transform.position, target.transform.position, obstacle.transform.position, ref currentVelocity, maxSpeed,
+            maxAcceleration, obstacleRadius, slowingDistance);
+        seeker.transform.position += currentVelocity * Time.deltaTime;
+        Debug.Log(currentVelocity);
+        Steering.RotateTowardsMovePath(seeker.transform, steer, turnSpeed);
     }
 }
