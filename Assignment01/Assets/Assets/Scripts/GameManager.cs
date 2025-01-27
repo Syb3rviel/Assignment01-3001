@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 
     //floats needs for certain speed / radius
     float maxSpeed = 5.0f;
-    float turnSpeed = 150f;
+    float turnSpeed = 175f;
     float maxAcceleration = 5.0f;
     float slowingDistance = 2f;
     float obstacleRadius = 2f;

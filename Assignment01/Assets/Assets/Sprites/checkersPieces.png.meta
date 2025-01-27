@@ -222,7 +222,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      checkersPieces_0: -7085561586633364802
+      checkersPieces_1: -8102195333104646002
+      checkersPieces_2: 8134072814509391360
+      checkersPieces_3: 8497916884030850512
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
