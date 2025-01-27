@@ -14,7 +14,7 @@ public class Steering : MonoBehaviour
 
         steering = Vector2.ClampMagnitude(steering, acceleration);
         currentVelocity += steering * Time.deltaTime;
-        currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed);
+        currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed).normalized;
         seeker += currentVelocity * Time.deltaTime;
         
         return steering;
@@ -41,8 +41,9 @@ public class Steering : MonoBehaviour
 
         steering = Vector2.ClampMagnitude(steering, acceleration);
         currentVelocity += steering * Time.deltaTime;
-        currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed);
+        currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed).normalized;
         seeker += currentVelocity * Time.deltaTime;
+
 
         return steering;
     }
@@ -50,7 +51,7 @@ public class Steering : MonoBehaviour
     {
         Vector3 desiredVelocity = target - seeker;
         float distance = desiredVelocity.magnitude;
-        if (distance <= 0.70f)
+        if (distance <= 0.60f)
         {
             //we want it to stop --- 1.58 is how wide one whole sprite is
             currentVelocity = Vector3.zero;
@@ -69,7 +70,7 @@ public class Steering : MonoBehaviour
 
         steering = Vector2.ClampMagnitude(steering, acceleration);
         currentVelocity += steering * Time.deltaTime;
-        currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed);
+        currentVelocity = Vector3.ClampMagnitude(currentVelocity, moveSpeed).normalized;
         seeker += currentVelocity * Time.deltaTime;
 
         return steering;
