@@ -50,6 +50,12 @@ public class Steering : MonoBehaviour
     {
         Vector3 desiredVelocity = target - seeker;
         float distance = desiredVelocity.magnitude;
+        if (distance <= 0.70f)
+        {
+            //we want it to stop --- 1.58 is how wide one whole sprite is
+            currentVelocity = Vector3.zero;
+            return currentVelocity;
+        }
 
         if (distance < slowDistance)
         {
